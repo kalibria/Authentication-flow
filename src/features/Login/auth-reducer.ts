@@ -1,8 +1,8 @@
-import { Dispatch } from 'redux'
+import {Dispatch} from 'redux'
 import {
     SetAppErrorActionType,
     setAppStatusAC,
-    SetAppStatusActionType,
+    SetAppStatusActionType, setIsInitialisedAC, SetIsInitialisedActionType,
 } from '../../app/app-reducer'
 import {LoginDateType} from "./Login";
 import {authAPI} from "../../api/todolists-api";
@@ -19,45 +19,48 @@ export const authReducer = (
 ): InitialStateType => {
     switch (action.type) {
         case 'login/SET-IS-LOGGED-IN':
-            return { ...state, isLoggedIn: action.value }
+            return {...state, isLoggedIn: action.value}
         default:
             return state
     }
 }
 // actions
 export const setIsLoggedInAC = (value: boolean) =>
-    ({ type: 'login/SET-IS-LOGGED-IN', value }) as const
+    ({type: 'login/SET-IS-LOGGED-IN', value}) as const
 
 // thunks
 export const loginTC = (data: LoginDateType) => (dispatch: Dispatch<ActionsType>) => {
     dispatch(setAppStatusAC('loading'))
     authAPI.login(data).then((res) => {
-        if(res.data.resultCode === 0){
+        if (res.data.resultCode === 0) {
             dispatch(setIsLoggedInAC(true))
-        }else {
+        } else {
             handleServerAppError(res.data, dispatch)
         }
 
         dispatch(setAppStatusAC('idle'))
     })
-        .catch((err)=>{
+        .catch((err) => {
             handleServerNetworkError(err, dispatch)
         })
 }
 
-export const meTC = ( ) => (dispatch: Dispatch<ActionsType>) => {
+export const meTC = () => (dispatch: Dispatch<ActionsType>) => {
     dispatch(setAppStatusAC('loading'))
-    authAPI.login(data).then((res) => {
-        if(res.data.resultCode === 0){
+    authAPI.me().then((res) => {
+        if (res.data.resultCode === 0) {
             dispatch(setIsLoggedInAC(true))
-        }else {
+        } else {
             handleServerAppError(res.data, dispatch)
         }
 
         dispatch(setAppStatusAC('idle'))
     })
-        .catch((err)=>{
+        .catch((err) => {
             handleServerNetworkError(err, dispatch)
+        })
+        .finally(() => {
+            dispatch(setIsInitialisedAC(true))
         })
 }
 
@@ -66,3 +69,4 @@ type ActionsType =
     | ReturnType<typeof setIsLoggedInAC>
     | SetAppStatusActionType
     | SetAppErrorActionType
+    | SetIsInitialisedActionType

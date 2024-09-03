@@ -12,15 +12,26 @@ import LinearProgress from '@mui/material/LinearProgress';
 import {Menu} from '@mui/icons-material';
 import {ErrorSnackbar} from '../components/ErrorSnackbar/ErrorSnackbar'
 import {Outlet} from "react-router-dom";
+import {meTC} from "../features/Login/auth-reducer";
+import {CircularProgress} from "@mui/material";
 
 
 function App() {
     const dispatch = useAppDispatch();
     const status = useAppSelector<RequestStatusType>((state) => state.app.status)
+    const isInitialised = useAppSelector<boolean>(state => state.app.isInitialized)
 
     useEffect(() => {
         dispatch(meTC())
     }, []);
+
+    if(!isInitialised){
+        return (
+            <div style={{ position: 'fixed', top: '30%', textAlign: 'center', width: '100%' }}>
+                <CircularProgress />
+            </div>
+        )
+    }
     return (
         <div className="App">
             <ErrorSnackbar/>
