@@ -45,6 +45,22 @@ export const loginTC = (data: LoginDateType) => (dispatch: Dispatch<ActionsType>
         })
 }
 
+export const meTC = ( ) => (dispatch: Dispatch<ActionsType>) => {
+    dispatch(setAppStatusAC('loading'))
+    authAPI.login(data).then((res) => {
+        if(res.data.resultCode === 0){
+            dispatch(setIsLoggedInAC(true))
+        }else {
+            handleServerAppError(res.data, dispatch)
+        }
+
+        dispatch(setAppStatusAC('idle'))
+    })
+        .catch((err)=>{
+            handleServerNetworkError(err, dispatch)
+        })
+}
+
 // types
 type ActionsType =
     | ReturnType<typeof setIsLoggedInAC>
