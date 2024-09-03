@@ -64,6 +64,25 @@ export const meTC = () => (dispatch: Dispatch<ActionsType>) => {
         })
 }
 
+export const logoutTC = () => (dispatch: Dispatch<ActionsType>) => {
+    dispatch(setAppStatusAC('loading'))
+    authAPI.logout().then((res) => {
+        if (res.data.resultCode === 0) {
+            dispatch(setIsLoggedInAC(false))
+        } else {
+            handleServerAppError(res.data, dispatch)
+        }
+
+        dispatch(setAppStatusAC('idle'))
+    })
+        .catch((err) => {
+            handleServerNetworkError(err, dispatch)
+        })
+        .finally(() => {
+            dispatch(setIsInitialisedAC(true))
+        })
+}
+
 // types
 type ActionsType =
     | ReturnType<typeof setIsLoggedInAC>

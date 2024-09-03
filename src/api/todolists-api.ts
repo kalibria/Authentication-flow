@@ -19,7 +19,7 @@ return instance.get<ResponseType<UserType>>('/auth/me')
 return instance.post<ResponseType<{userId:number}>,AxiosResponse<ResponseType<{userId:number}>>,LoginDateType>('auth/login', data)
     },
     logout(){
-
+        return instance.delete<ResponseType>(`auth/login`);
     }
 }
 
