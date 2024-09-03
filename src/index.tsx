@@ -5,14 +5,16 @@ import reportWebVitals from './reportWebVitals';
 import App from './app/App';
 import {Provider} from 'react-redux';
 import {store} from './app/store';
-import {createBrowserRouter} from "react-router-dom";
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {Login} from "./features/Login/Login";
 import {TodolistsList} from "./features/TodolistsList/TodolistsList";
+import {ErrorPage} from "./components/ErrorPage/ErrorPage";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <App/>,
+        errorElement: <ErrorPage/>,
         children: [
             {
                 path: "/login",
@@ -32,7 +34,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
     <Provider store={store}>
-        <App/>
+        <RouterProvider router={router}/>
     </Provider>
 );
 
