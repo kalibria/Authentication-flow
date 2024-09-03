@@ -4,6 +4,9 @@ import {
     setAppStatusAC,
     SetAppStatusActionType,
 } from '../../app/app-reducer'
+import {LoginDateType} from "./Login";
+import {authAPI} from "../../api/todolists-api";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 const initialState = {
     isLoggedIn: false,
@@ -26,8 +29,20 @@ export const setIsLoggedInAC = (value: boolean) =>
     ({ type: 'login/SET-IS-LOGGED-IN', value }) as const
 
 // thunks
-export const loginTC = (data: any) => (dispatch: Dispatch<ActionsType>) => {
+export const loginTC = (data: LoginDateType) => (dispatch: Dispatch<ActionsType>) => {
     dispatch(setAppStatusAC('loading'))
+    authAPI.login(data).then((res) => {
+        if(res.data.resultCode === 0){
+            dispatch(setIsLoggedInAC(true))
+        }else {
+            handleServerAppError(res.data, dispatch)
+        }
+
+        dispatch(setAppStatusAC('idle'))
+    })
+        .catch((err)=>{
+            handleServerNetworkError(err, dispatch)
+        })
 }
 
 // types
